@@ -36,6 +36,7 @@ export const register = async (req, res) => {
       message: "User registered successfully",
       token,
       user: {
+        _id: user._id, // Add _id for consistency with frontend expectations
         id: user._id,
         name: user.name,
         email: user.email,
