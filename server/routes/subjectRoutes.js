@@ -10,6 +10,12 @@ import authorize from "../middleware/authorize.js";
 
 const router = express.Router();
 
+router.get("/", verifyToken, authorize("ADMIN", "FACULTY"), getAllSubjects);
+
+router.post("/", verifyToken, authorize("ADMIN"), createSubject);
+
+router.delete("/:id", verifyToken, authorize("ADMIN"), deleteSubject);
+
 router.post("/create-subject", verifyToken, authorize("ADMIN"), createSubject);
 
 router.get("/get-all-subjects", verifyToken, authorize("ADMIN", "FACULTY"), 

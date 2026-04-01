@@ -16,9 +16,11 @@ export const getAllUsers = async (req, res) => {
 export const createUser = async (req, res) => {
   try {
     const { name, email, password, role } = req.body;
+    console.log("CreateUser payload:", { name, email, role });
 
     const existingUser = await User.findOne({ email });
     if (existingUser) {
+      console.log("User already exists with email:", email);
       return res.status(409).json({ message: "Email already in use" });
     }
 
@@ -31,10 +33,12 @@ export const createUser = async (req, res) => {
       password: hashedPassword,
       role,
     });
+    console.log("User created successfully in DB:", user._id);
 
     res.status(201).json({
       message: "User created successfully",
       user: {
+        _id: user._id,
         id: user._id,
         name: user.name,
         email: user.email,
@@ -42,6 +46,7 @@ export const createUser = async (req, res) => {
       },
     });
   } catch (err) {
+    console.error("Backend createUser error:", err.message);
     res.status(500).json({ message: "Server error", error: err.message });
   }
 };
