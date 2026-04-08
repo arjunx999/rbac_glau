@@ -31,8 +31,8 @@ const FacultyDashboard = () => {
     setLoading(true);
     try {
       const [usersRes, subjectsRes] = await Promise.all([
-        api.get('/api/users'),
-        api.get('/api/subjects') 
+        api.get('/users'),
+        api.get('/subjects') 
       ]);
       
       const studentList = usersRes.data.users?.filter(u => u.role === 'STUDENT') || [];
@@ -47,7 +47,7 @@ const FacultyDashboard = () => {
       console.error('Error fetching faculty data:', err);
       // Fallback if subjects endpoint fails but users work
       try {
-        const usersRes = await api.get('/api/users');
+        const usersRes = await api.get('/users');
         setStudents(usersRes.data.users?.filter(u => u.role === 'STUDENT') || []);
       } catch (e) {
         console.error('Critical fetch error:', e);
@@ -62,18 +62,18 @@ const FacultyDashboard = () => {
     setSaving(true);
     try {
       // First, try to fetch if marks already exist for this student and subject
-      const studentMarksRes = await api.get(`/api/marks/${selectedStudent._id}`);
+      const studentMarksRes = await api.get(`/marks/${selectedStudent._id}`);
       const existingMark = studentMarksRes.data.marks?.find(m => m.subjectId?._id === marks.subject);
 
       if (existingMark) {
         // Update existing marks
-        await api.put(`/api/marks/${existingMark._id}`, {
+        await api.put(`/marks/${existingMark._id}`, {
           marks: Number(marks.score)
         });
         alert(`Marks updated successfully for ${selectedStudent.name}!`);
       } else {
         // Create new marks
-        await api.post('/api/marks', {
+        await api.post('/marks', {
           studentId: selectedStudent._id,
           subjectId: marks.subject,
           marks: Number(marks.score)
