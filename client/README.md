@@ -1,3 +1,7 @@
+## 📌 Project: RBAC System
+
+This project is a Role-Based Access Control (RBAC) system that manages user access based on roles and permissions.
+
 # React + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
