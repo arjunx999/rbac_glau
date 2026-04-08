@@ -36,7 +36,7 @@ const AdminDashboard = () => {
   const fetchUsers = async () => {
     setLoading(true);
     try {
-      const response = await api.get('/api/users');
+      const response = await api.get('/users');
       // The backend returns { count, users }, not just an array
       setUsers(response.data.users || []);
       setError('');
@@ -52,7 +52,7 @@ const AdminDashboard = () => {
     if (!window.confirm('Are you sure you want to delete this user?')) return;
     
     try {
-      await api.delete(`/api/users/${userId}`);
+      await api.delete(`/users/${userId}`);
       // After deleting, refresh the list from backend to be sure
       await fetchUsers();
       alert('User deleted successfully!');
@@ -66,8 +66,8 @@ const AdminDashboard = () => {
     e.preventDefault();
     setCreating(true);
     try {
-      // Backend /api/users/create-user endpoint is specifically for admins to create users
-      await api.post('/api/users/create-user', newUser);
+      // Backend /users/create-user endpoint is specifically for admins to create users
+      await api.post('/users/create-user', newUser);
       
       // Refresh the entire list from server to get the correct IDs and sync with database
       await fetchUsers();
