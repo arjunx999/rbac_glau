@@ -18,8 +18,8 @@ const Sidebar = () => {
       case 'ADMIN':
         return [
           { to: '/admin', label: 'Dashboard', icon: <LayoutDashboard size={20} /> },
-          { to: '/admin/users', label: 'Manage Users', icon: <Users size={20} /> },
-          { to: '/admin/create-user', label: 'Add User', icon: <UserPlus size={20} /> },
+          { to: '/admin/students', label: 'Students', icon: <Users size={20} /> },
+          { to: '/admin/faculty', label: 'Faculty', icon: <UserPlus size={20} /> },
         ];
       case 'FACULTY':
         return [
@@ -47,10 +47,11 @@ const Sidebar = () => {
           <NavLink
             key={link.to}
             to={link.to}
+            end={link.label === 'Dashboard'}
             className={({ isActive }) => 
               `flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
                 isActive 
-                  ? 'bg-indigo-600 text-white' 
+                  ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-900/20' 
                   : 'text-gray-400 hover:bg-gray-800 hover:text-white'
               }`
             }

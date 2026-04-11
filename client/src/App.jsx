@@ -24,8 +24,8 @@ function App() {
                 <DashboardLayout>
                   <Routes>
                     <Route path="/" element={<AdminDashboard />} />
-                    <Route path="/users" element={<AdminDashboard />} />
-                    <Route path="/create-user" element={<AdminDashboard />} />
+                    <Route path="/students" element={<AdminDashboard />} />
+                    <Route path="/faculty" element={<AdminDashboard />} />
                   </Routes>
                 </DashboardLayout>
               </ProtectedRoute>
