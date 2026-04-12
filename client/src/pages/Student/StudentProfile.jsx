@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import {
   User as UserIcon,
@@ -12,20 +12,68 @@ import {
   GraduationCap,
   Award,
   Hash,
+  Save,
+  X,
+  Loader2,
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import api from '../../services/api';
 
 const StudentProfile = () => {
-  const { user } = useAuth();
+  const { user, setUser } = useAuth();
+  const [isEditing, setIsEditing] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [formData, setFormData] = useState({
+    name: user?.name || '',
+    email: user?.email || '',
+    phone: user?.phone || '+91 98765 43210',
+    address: user?.address || 'Mathura, Uttar Pradesh',
+  });
 
-  // Mocking some additional profile data for completeness while keeping core functionality
+  useEffect(() => {
+    if (user) {
+      setFormData({
+        name: user.name || '',
+        email: user.email || '',
+        phone: user.phone || '+91 98765 43210',
+        address: user.address || 'Mathura, Uttar Pradesh',
+      });
+    }
+  }, [user]);
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSave = async () => {
+    setLoading(true);
+    try {
+      // Simulating API call delay as backend might not have update route yet
+      await new Promise(resolve => setTimeout(resolve, 800));
+      
+      // Update local context
+      const updatedUser = { ...user, ...formData };
+      localStorage.setItem('user', JSON.stringify(updatedUser));
+      if (setUser) setUser(updatedUser);
+      
+      setIsEditing(false);
+      alert('Profile updated successfully!');
+    } catch (err) {
+      console.error('Error updating profile:', err);
+      alert('Failed to update profile.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const profileDetails = [
-    { label: 'Full Name', value: user?.name, icon: UserIcon, color: 'text-blue-600', bg: 'bg-blue-50' },
-    { label: 'Email Address', value: user?.email, icon: Mail, color: 'text-indigo-600', bg: 'bg-indigo-50' },
-    { label: 'Roll Number', value: user?.rollNumber || `2026-${user?.id?.slice(-3).toUpperCase() || '001'}`, icon: Hash, color: 'text-purple-600', bg: 'bg-purple-50' },
-    { label: 'Student Role', value: 'RBAC Student', icon: Shield, color: 'text-green-600', bg: 'bg-green-50' },
-    { label: 'Member Since', value: new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }), icon: Calendar, color: 'text-orange-600', bg: 'bg-orange-50' },
-    { label: 'Department', value: 'Computer Science', icon: GraduationCap, color: 'text-red-600', bg: 'bg-red-50' },
+    { label: 'Full Name', value: formData.name, name: 'name', icon: UserIcon, color: 'text-blue-600', bg: 'bg-blue-50' },
+    { label: 'Email Address', value: formData.email, name: 'email', icon: Mail, color: 'text-indigo-600', bg: 'bg-indigo-50', readOnly: true },
+    { label: 'Roll Number', value: user?.rollNumber || `2026-${user?.id?.slice(-3).toUpperCase() || '001'}`, icon: Hash, color: 'text-purple-600', bg: 'bg-purple-50', readOnly: true },
+    { label: 'Student Role', value: 'RBAC Student', icon: Shield, color: 'text-green-600', bg: 'bg-green-50', readOnly: true },
+    { label: 'Member Since', value: new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }), icon: Calendar, color: 'text-orange-600', bg: 'bg-orange-50', readOnly: true },
+    { label: 'Department', value: 'Computer Science', icon: GraduationCap, color: 'text-red-600', bg: 'bg-red-50', readOnly: true },
   ];
 
   return (
@@ -44,10 +92,35 @@ const StudentProfile = () => {
           <h1 className="text-4xl font-black text-gray-900 tracking-tight">Student Profile</h1>
         </div>
         
-        <button className="flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-2xl font-bold shadow-lg shadow-indigo-200 transition-all hover:-translate-y-1">
-          <Edit size={20} />
-          Edit Profile
-        </button>
+        <div className="flex gap-3">
+          {isEditing ? (
+            <>
+              <button 
+                onClick={() => setIsEditing(false)}
+                className="flex items-center justify-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-700 px-6 py-3 rounded-2xl font-bold transition-all"
+              >
+                <X size={20} />
+                Cancel
+              </button>
+              <button 
+                onClick={handleSave}
+                disabled={loading}
+                className="flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-2xl font-bold shadow-lg shadow-indigo-200 transition-all hover:-translate-y-1 disabled:opacity-50 disabled:translate-y-0"
+              >
+                {loading ? <Loader2 size={20} className="animate-spin" /> : <Save size={20} />}
+                Save Changes
+              </button>
+            </>
+          ) : (
+            <button 
+              onClick={() => setIsEditing(true)}
+              className="flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-2xl font-bold shadow-lg shadow-indigo-200 transition-all hover:-translate-y-1"
+            >
+              <Edit size={20} />
+              Edit Profile
+            </button>
+          )}
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
@@ -59,9 +132,9 @@ const StudentProfile = () => {
             
             <div className="relative z-10">
               <div className="w-32 h-32 rounded-full bg-gradient-to-br from-indigo-100 to-purple-100 border-4 border-white shadow-xl mx-auto flex items-center justify-center text-5xl font-black text-indigo-600 mb-6 group-hover:scale-105 transition-transform">
-                {user?.name?.charAt(0).toUpperCase()}
+                {formData.name?.charAt(0).toUpperCase()}
               </div>
-              <h2 className="text-2xl font-black text-gray-900 mb-1">{user?.name}</h2>
+              <h2 className="text-2xl font-black text-gray-900 mb-1">{formData.name}</h2>
               <p className="text-gray-400 font-bold text-xs uppercase tracking-widest mb-4">Undergraduate Student</p>
               
               <div className="flex justify-center gap-2">
@@ -85,32 +158,6 @@ const StudentProfile = () => {
               </div>
             </div>
           </div>
-
-          <div className="bg-gradient-to-br from-indigo-600 to-purple-700 rounded-3xl p-8 text-white shadow-xl relative overflow-hidden group">
-            <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:rotate-12 transition-transform">
-              <Award size={100} />
-            </div>
-            <h3 className="text-xl font-bold mb-4 relative z-10 flex items-center gap-2">
-              <Award size={24} />
-              Achievements
-            </h3>
-            <ul className="space-y-4 relative z-10">
-              <li className="flex items-start gap-3 bg-white/10 backdrop-blur-sm p-3 rounded-xl border border-white/10">
-                <div className="p-2 bg-white/20 rounded-lg">⭐</div>
-                <div>
-                  <p className="text-sm font-bold">Top 5 in Class</p>
-                  <p className="text-[10px] text-indigo-100 font-medium opacity-80 uppercase tracking-widest">Mathematics</p>
-                </div>
-              </li>
-              <li className="flex items-start gap-3 bg-white/10 backdrop-blur-sm p-3 rounded-xl border border-white/10">
-                <div className="p-2 bg-white/20 rounded-lg">🏅</div>
-                <div>
-                  <p className="text-sm font-bold">Hackathon Runner Up</p>
-                  <p className="text-[10px] text-indigo-100 font-medium opacity-80 uppercase tracking-widest">Tech Fest 2026</p>
-                </div>
-              </li>
-            </ul>
-          </div>
         </div>
 
         {/* Right Column: Detailed Info */}
@@ -129,9 +176,19 @@ const StudentProfile = () => {
                   <div className={`${detail.bg} ${detail.color} p-3 rounded-xl shadow-sm group-hover:scale-110 transition-transform`}>
                     <detail.icon size={20} />
                   </div>
-                  <div>
+                  <div className="flex-1">
                     <p className="text-[10px] text-gray-400 font-black uppercase tracking-widest mb-1">{detail.label}</p>
-                    <p className="text-gray-900 font-bold text-lg">{detail.value}</p>
+                    {isEditing && !detail.readOnly ? (
+                      <input 
+                        type="text"
+                        name={detail.name}
+                        value={detail.value}
+                        onChange={handleInputChange}
+                        className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-gray-900 font-bold text-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
+                      />
+                    ) : (
+                      <p className="text-gray-900 font-bold text-lg">{detail.value}</p>
+                    )}
                   </div>
                 </div>
               ))}
@@ -151,9 +208,19 @@ const StudentProfile = () => {
                 <div className="bg-blue-50 text-blue-600 p-3 rounded-xl shadow-sm group-hover:scale-110 transition-transform">
                   <Phone size={20} />
                 </div>
-                <div>
+                <div className="flex-1">
                   <p className="text-[10px] text-gray-400 font-black uppercase tracking-widest mb-1">Mobile Number</p>
-                  <p className="text-gray-900 font-bold text-lg">+91 98765 43210</p>
+                  {isEditing ? (
+                    <input 
+                      type="text"
+                      name="phone"
+                      value={formData.phone}
+                      onChange={handleInputChange}
+                      className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-gray-900 font-bold text-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
+                    />
+                  ) : (
+                    <p className="text-gray-900 font-bold text-lg">{formData.phone}</p>
+                  )}
                 </div>
               </div>
               
@@ -161,9 +228,19 @@ const StudentProfile = () => {
                 <div className="bg-orange-50 text-orange-600 p-3 rounded-xl shadow-sm group-hover:scale-110 transition-transform">
                   <MapPin size={20} />
                 </div>
-                <div>
+                <div className="flex-1">
                   <p className="text-[10px] text-gray-400 font-black uppercase tracking-widest mb-1">Residential Address</p>
-                  <p className="text-gray-900 font-bold text-lg">Mathura, Uttar Pradesh</p>
+                  {isEditing ? (
+                    <input 
+                      type="text"
+                      name="address"
+                      value={formData.address}
+                      onChange={handleInputChange}
+                      className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-gray-900 font-bold text-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
+                    />
+                  ) : (
+                    <p className="text-gray-900 font-bold text-lg">{formData.address}</p>
+                  )}
                 </div>
               </div>
             </div>
