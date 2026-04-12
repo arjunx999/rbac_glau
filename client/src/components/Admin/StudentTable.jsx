@@ -27,7 +27,7 @@ const StudentTable = ({ students, onEdit, onDelete, onManageMarks }) => {
                 <td className="px-6 py-4">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-600 font-bold border border-indigo-100 group-hover:bg-indigo-600 group-hover:text-white transition-colors duration-300">
-                      {s.name.charAt(0).toUpperCase()}
+                      {s.name?.charAt(0).toUpperCase() || 'S'}
                     </div>
                     <div>
                       <p className="font-bold text-gray-900">{s.name}</p>

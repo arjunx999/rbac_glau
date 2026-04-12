@@ -65,3 +65,28 @@ export const deleteUser = async (req, res) => {
     res.status(500).json({ message: "Server error", error: err.message });
   }
 };
+
+// admin only
+export const updateUser = async (req, res) => {
+  try {
+    const { name, email, role, password } = req.body;
+    const updateData = { name, email, role };
+
+    if (password) {
+      const salt = await bcrypt.genSalt();
+      updateData.password = await bcrypt.hash(password, salt);
+    }
+
+    const user = await User.findByIdAndUpdate(req.params.id, updateData, {
+      new: true,
+    }).select("-password");
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json({ message: "User updated successfully", user });
+  } catch (err) {
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
+};

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
+import api from '../../services/api';
 import { 
   User as UserIcon, 
   Mail, 
@@ -20,7 +21,7 @@ const StudentDashboard = () => {
     const fetchMarks = async () => {
       if (!user?.id) return;
       try {
-        const response = await api.get(`/marks/${user.id}`);
+        const response = await api.get(`/marks/get-marks/${user.id}`);
         setMarks(response.data.marks || []);
       } catch (err) {
         console.error('Error fetching marks:', err);
@@ -46,11 +47,11 @@ const StudentDashboard = () => {
         </div>
         
         <div className="w-24 h-24 rounded-full bg-white bg-opacity-20 backdrop-blur-md flex items-center justify-center text-4xl font-bold border-4 border-white border-opacity-30">
-          {user?.name.charAt(0).toUpperCase()}
+          {user?.name?.charAt(0).toUpperCase() || 'S'}
         </div>
         
         <div className="text-center md:text-left z-10">
-          <h1 className="text-3xl font-bold mb-2">Welcome, {user?.name}!</h1>
+          <h1 className="text-3xl font-bold mb-2">Welcome, {user?.name || 'Student'}!</h1>
           <p className="text-indigo-100 flex items-center gap-2 justify-center md:justify-start">
             <Mail size={16} /> {user?.email}
           </p>
