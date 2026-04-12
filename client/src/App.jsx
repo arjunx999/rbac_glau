@@ -7,6 +7,8 @@ import Login from './pages/Auth/Login';
 import AdminDashboard from './pages/Admin/AdminDashboard';
 import FacultyDashboard from './pages/Faculty/FacultyDashboard';
 import StudentDashboard from './pages/Student/StudentDashboard';
+import MyMarks from './pages/Student/MyMarks';
+import StudentProfile from './pages/Student/StudentProfile';
 
 function App() {
   return (
@@ -56,8 +58,8 @@ function App() {
                 <DashboardLayout>
                   <Routes>
                     <Route path="/" element={<StudentDashboard />} />
-                    <Route path="/marks" element={<StudentDashboard />} />
-                    <Route path="/profile" element={<StudentDashboard />} />
+                    <Route path="/marks" element={<MyMarks />} />
+                    <Route path="/profile" element={<StudentProfile />} />
                   </Routes>
                 </DashboardLayout>
               </ProtectedRoute>
