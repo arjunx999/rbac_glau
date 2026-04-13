@@ -7,7 +7,8 @@ import {
   UserPlus, 
   BookOpen, 
   ClipboardCheck, 
-  UserCircle 
+  UserCircle,
+  ChevronRight
 } from 'lucide-react';
 
 const Sidebar = () => {
@@ -41,29 +42,45 @@ const Sidebar = () => {
   const links = getLinks();
 
   return (
-    <aside className="w-64 bg-gray-900 text-white min-h-screen fixed left-0 top-16 pt-4 flex flex-col transition-all z-20 shadow-xl">
-      <div className="flex-1 px-4 space-y-2">
+    <aside className="w-72 bg-[#0f172a] text-slate-400 min-h-screen fixed left-0 top-16 pt-8 flex flex-col transition-all duration-500 z-30 border-r border-slate-800/50 shadow-2xl">
+      <div className="px-6 mb-8">
+        <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 ml-1">Main Menu</p>
+      </div>
+      
+      <nav className="flex-1 px-4 space-y-1.5">
         {links.map((link) => (
           <NavLink
             key={link.to}
             to={link.to}
             end={link.label === 'Dashboard'}
             className={({ isActive }) => 
-              `flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
+              `group flex items-center justify-between px-4 py-3.5 rounded-2xl transition-all duration-300 ${
                 isActive 
-                  ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-900/20' 
-                  : 'text-gray-400 hover:bg-gray-800 hover:text-white'
+                  ? 'bg-indigo-600/10 text-indigo-400 font-bold shadow-inner' 
+                  : 'hover:bg-slate-800/50 hover:text-slate-200'
               }`
             }
           >
-            {link.icon}
-            <span className="font-medium">{link.label}</span>
+            <div className="flex items-center gap-3.5">
+              <div className={({ isActive }) => 
+                `transition-colors duration-300 ${isActive ? 'text-indigo-400' : 'group-hover:text-slate-200'}`
+              }>
+                {link.icon}
+              </div>
+              <span className="text-sm tracking-tight">{link.label}</span>
+            </div>
+            
+            <ChevronRight size={14} className="opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all" />
           </NavLink>
         ))}
-      </div>
+      </nav>
       
-      <div className="p-6 border-t border-gray-800 text-gray-400 text-sm">
-        <p>&copy; 2026 RBAC System</p>
+      <div className="p-8 mt-auto">
+        <div className="p-5 bg-slate-800/40 rounded-3xl border border-slate-700/30 backdrop-blur-sm">
+          <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Session ID</p>
+          <p className="text-[11px] font-mono text-indigo-400/80 break-all">{Math.random().toString(36).substr(2, 9).toUpperCase()}</p>
+        </div>
+        <p className="mt-6 text-[10px] font-bold text-slate-600 text-center uppercase tracking-tighter">&copy; 2026 RBAC Security Protocol</p>
       </div>
     </aside>
   );
