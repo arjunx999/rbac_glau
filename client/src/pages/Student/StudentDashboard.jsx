@@ -29,7 +29,7 @@ const StudentDashboard = () => {
     const fetchMarks = async () => {
       if (!user?.id) return;
       try {
-        const response = await api.get(`/marks/${user.id}`);
+        const response = await api.get(`/marks/get-marks/${user.id}`);
         setMarks(response.data.marks || []);
       } catch (err) {
         console.error('Error fetching marks:', err);
