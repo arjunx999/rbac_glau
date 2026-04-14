@@ -9,12 +9,12 @@ import authorize from "../middleware/authorize.js";
 
 const router = express.Router();
 
-router.use(verifyToken, authorize("ADMIN"));
+router.use(verifyToken);
 
-router.get("/", getAllUsers);
+router.get("/", authorize("ADMIN", "FACULTY"), getAllUsers);
 
-router.post("/create-user", createUser);
+router.post("/create-user", authorize("ADMIN"), createUser);
 
-router.delete("/:id", deleteUser);
+router.delete("/:id", authorize("ADMIN"), deleteUser);
 
 export default router;

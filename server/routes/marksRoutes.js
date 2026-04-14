@@ -10,7 +10,7 @@ import authorize from "../middleware/authorize.js";
 
 const router = express.Router();
 
-router.get("/get-marks/:studentId", verifyToken, authorize("ADMIN", "STUDENT"), getMarksByStudent);
+router.get("/get-marks/:studentId", verifyToken, authorize("ADMIN", "FACULTY", "STUDENT"), getMarksByStudent);
 
 router.post("/upload-marks", verifyToken, authorize("ADMIN", "FACULTY"), uploadMarks);
 

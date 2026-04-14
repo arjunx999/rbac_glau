@@ -1,5 +1,6 @@
 import Subject from "../models/subject.js";
 import User from "../models/user.js";
+import Marks from "../models/marks.js";
 
 // admin only
 export const createSubject = async (req, res) => {
@@ -34,7 +35,6 @@ export const assignFaculty = async (req, res) => {
     if (!faculty) {
       return res.status(404).json({ message: "User not found" });
     }
-
     if (faculty.role !== "FACULTY") {
       return res.status(400).json({ message: "User is not a faculty" });
     }
@@ -49,7 +49,31 @@ export const assignFaculty = async (req, res) => {
       return res.status(404).json({ message: "Subject not found" });
     }
 
-    res.status(200).json({ message: "Faculty assigned successfully", subject });
+    const allStudents = await User.find({ role: "STUDENT" }).select("_id");
+    const existingMarks = await Marks.find({ subjectId: subject._id }).select(
+      "studentId",
+    );
+    const enrolledIds = new Set(
+      existingMarks.map((m) => m.studentId.toString()),
+    );
+
+    const newEntries = allStudents
+      .filter((s) => !enrolledIds.has(s._id.toString()))
+      .map((s) => ({
+        studentId: s._id,
+        subjectId: subject._id,
+        marks: 0,
+        updatedBy: req.user.userId,
+      }));
+
+    if (newEntries.length > 0) {
+      await Marks.insertMany(newEntries);
+    }
+
+    res.status(200).json({
+      message: "Faculty assigned and students enrolled successfully",
+      subject,
+    });
   } catch (err) {
     res.status(500).json({ message: "Server error", error: err.message });
   }
