@@ -24,8 +24,7 @@ const Sidebar = () => {
       case 'FACULTY':
         return [
           { to: '/faculty', label: 'Dashboard', icon: <LayoutDashboard size={20} /> },
-          { to: '/faculty/subjects', label: 'My Subjects', icon: <BookOpen size={20} /> },
-          { to: '/faculty/marks', label: 'Manage Marks', icon: <ClipboardCheck size={20} /> },
+          { to: '/faculty/students', label: 'Students', icon: <Users size={20} /> },
         ];
       case 'STUDENT':
         return [
