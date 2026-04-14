@@ -23,8 +23,8 @@ const Sidebar = () => {
         ];
       case 'FACULTY':
         return [
-          { to: '/faculty', label: 'Dashboard', icon: <LayoutDashboard size={20} /> },
-          { to: '/faculty/students', label: 'Students', icon: <Users size={20} /> },
+          { to: '/faculty', label: 'Students', icon: <LayoutDashboard size={20} /> },
+          // { to: '/faculty/students', label: 'Students', icon: <Users size={20} /> },
         ];
       case 'STUDENT':
         return [
