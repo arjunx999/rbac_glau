@@ -42,6 +42,7 @@ function App() {
                     <Route path="/" element={<FacultyDashboard />} />
                     <Route path="/subjects" element={<FacultyDashboard />} />
                     <Route path="/marks" element={<FacultyDashboard />} />
+                    <Route path="/profile" element={<FacultyDashboard />} />
                   </Routes>
                 </DashboardLayout>
               </ProtectedRoute>

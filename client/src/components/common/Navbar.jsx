@@ -2,14 +2,17 @@ import React from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { LogOut, User, Shield, Menu } from 'lucide-react';
 
-const Navbar = () => {
+const Navbar = ({ onToggleSidebar, isSidebarOpen }) => {
   const { user, logout } = useAuth();
 
   return (
     <nav className="bg-white/80 backdrop-blur-md border-b border-slate-200/60 h-16 flex items-center justify-between px-4 md:px-8 fixed top-0 left-0 right-0 z-40 shadow-[0_1px_3px_rgba(0,0,0,0.02)] transition-all duration-300">
       <div className="flex items-center gap-4">
-        <div className="lg:hidden p-2 text-slate-500 hover:bg-slate-100 rounded-xl transition-colors cursor-pointer">
-          <Menu size={20} />
+        <div 
+          onClick={onToggleSidebar}
+          className="p-2 text-slate-500 hover:bg-slate-100 rounded-xl transition-colors cursor-pointer"
+        >
+          <Menu size={20} className={`transition-transform duration-300 ${isSidebarOpen ? 'rotate-90 text-indigo-600' : ''}`} />
         </div>
         <div className="flex items-center gap-2.5 group cursor-default">
           <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-indigo-200 transform group-hover:scale-105 transition-all duration-300">
